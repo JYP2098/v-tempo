@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap, registerGsap } from "@/lib/gsap";
+import { shouldUseHeavyMotion } from "@/lib/motion-prefs";
 import Button from "@/components/ui/Button";
 
 export default function BeginCTA() {
@@ -10,7 +11,7 @@ export default function BeginCTA() {
 
   useEffect(() => {
     registerGsap();
-    if (!ref.current) return;
+    if (!ref.current || !shouldUseHeavyMotion()) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".begin-content", {
@@ -33,11 +34,11 @@ export default function BeginCTA() {
   };
 
   return (
-    <section ref={ref} id="begin" className="relative min-h-screen px-6 lg:px-10">
+    <section ref={ref} id="begin" className="relative min-h-0 px-6 py-20 sm:min-h-screen sm:py-32 lg:px-10">
       <div className="absolute inset-0 watch-glow" />
-      <div className="begin-content relative mx-auto flex min-h-screen max-w-3xl flex-col justify-center py-32">
+      <div className="begin-content relative mx-auto flex max-w-3xl flex-col justify-center py-8 sm:min-h-screen sm:py-32">
         <p className="section-label mb-8">Chapter 08 — Begin</p>
-        <h2 className="display-title text-5xl sm:text-6xl lg:text-7xl">
+        <h2 className="display-title text-4xl sm:text-6xl lg:text-7xl">
           Let&apos;s Build Your Story.
         </h2>
         <p className="mt-8 max-w-lg text-muted">

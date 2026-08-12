@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   title: "V TEMPO | Custom Timepieces",
   description:
     "V TEMPO — a story told in time. Custom timepieces by Vitor, self-taught watchmaker and perfumer.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

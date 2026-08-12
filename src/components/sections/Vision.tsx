@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, registerGsap } from "@/lib/gsap";
+import { shouldUseHeavyMotion } from "@/lib/motion-prefs";
 
 const items = [
   {
@@ -27,7 +28,7 @@ export default function Vision() {
 
   useEffect(() => {
     registerGsap();
-    if (!ref.current) return;
+    if (!ref.current || !shouldUseHeavyMotion()) return;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -58,21 +59,23 @@ export default function Vision() {
   }, []);
 
   return (
-    <section ref={ref} id="vision" className="relative min-h-screen px-6 lg:px-10">
-      <div className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center py-24">
-        <p className="section-label mb-8">Chapter 02 — Your Vision</p>
-        <h2 className="display-title mb-20 text-4xl sm:text-5xl lg:text-6xl">
+    <section ref={ref} id="vision" className="relative px-6 lg:px-10">
+      <div className="mx-auto flex max-w-3xl flex-col justify-center py-20 sm:min-h-screen sm:py-24">
+        <p className="section-label mb-6 sm:mb-8">Chapter 02 — Your Vision</p>
+        <h2 className="display-title mb-12 text-3xl sm:mb-20 sm:text-5xl lg:text-6xl">
           You bring the idea. We give it form.
         </h2>
 
-        <div className="space-y-12">
+        <div className="space-y-8 sm:space-y-12">
           {items.map((item, i) => (
             <div
               key={item.label}
-              className={`vision-item-${i} border-l-2 border-line pl-8 transition-colors`}
+              className={`vision-item-${i} border-l-2 border-line pl-6 sm:pl-8`}
             >
-              <h3 className="display-title text-3xl sm:text-4xl">{item.label}</h3>
-              <p className="mt-4 text-lg leading-relaxed text-muted">{item.desc}</p>
+              <h3 className="display-title text-2xl sm:text-4xl">{item.label}</h3>
+              <p className="mt-3 text-base leading-relaxed text-muted sm:mt-4 sm:text-lg">
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>

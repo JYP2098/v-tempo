@@ -3,13 +3,14 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap, registerGsap } from "@/lib/gsap";
+import { shouldUseHeavyMotion } from "@/lib/motion-prefs";
 
 export default function Maker() {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     registerGsap();
-    if (!ref.current) return;
+    if (!ref.current || !shouldUseHeavyMotion()) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".maker-content > *", {
@@ -28,29 +29,30 @@ export default function Maker() {
   }, []);
 
   return (
-    <section ref={ref} id="maker" className="relative px-6 py-32 lg:px-10 lg:py-48">
+    <section ref={ref} id="maker" className="relative px-6 py-20 sm:py-32 lg:px-10 lg:py-48">
       <div className="absolute inset-0 watch-glow opacity-30" />
       <div className="maker-content relative mx-auto max-w-7xl">
-        <p className="section-label mb-8">Chapter 06 — Meet the Maker</p>
+        <p className="section-label mb-6 sm:mb-8">Chapter 06 — Meet the Maker</p>
 
-        <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
-          <div className="relative aspect-[4/5] overflow-hidden border border-line bg-surface/30">
+        <div className="grid gap-10 sm:gap-16 lg:grid-cols-2 lg:items-start">
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden border border-line bg-surface/30 lg:max-w-none">
             <Image
               src="/vitor-maker.png"
               alt="Vitor at his watchmaking bench"
               fill
               className="object-cover object-center grayscale"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 768px) 90vw, 50vw"
+              priority={false}
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/40 via-transparent to-bg/20" />
           </div>
 
           <div>
-            <h2 className="display-title text-4xl sm:text-5xl lg:text-6xl">
+            <h2 className="display-title text-3xl sm:text-5xl lg:text-6xl">
               A story told in time.
             </h2>
 
-            <div className="mt-8 space-y-6 text-lg leading-relaxed text-muted">
+            <div className="mt-6 space-y-5 text-base leading-relaxed text-muted sm:mt-8 sm:space-y-6 sm:text-lg">
               <p>
                 V TEMPO is not just a watch brand — it is a story told in time. Founded
                 by Vitor, a self-taught watchmaker and perfumer, the atelier is the
@@ -75,11 +77,11 @@ export default function Maker() {
               </p>
             </div>
 
-            <div className="mt-12 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap gap-3 sm:mt-12 sm:gap-4">
               {["Watchmaker", "Perfumer", "Storyteller", "Brazilian roots"].map((tag) => (
                 <span
                   key={tag}
-                  className="border border-line px-4 py-2 text-xs uppercase tracking-[0.18em] text-muted"
+                  className="border border-line px-3 py-2 text-[0.625rem] uppercase tracking-[0.18em] text-muted sm:px-4 sm:text-xs"
                 >
                   {tag}
                 </span>

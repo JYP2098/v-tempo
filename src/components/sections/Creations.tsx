@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap, registerGsap } from "@/lib/gsap";
+import { shouldUseHeavyMotion } from "@/lib/motion-prefs";
 
 const projects = [
   {
@@ -59,12 +60,39 @@ const projects = [
   },
 ];
 
+function ProjectImage({
+  project,
+}: {
+  project: (typeof projects)[number] & { image: string; objectPosition?: string; imageZoom?: number };
+}) {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      <div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          width: `${(project.imageZoom ?? 1) * 100}%`,
+          height: `${(project.imageZoom ?? 1) * 100}%`,
+        }}
+      >
+        <Image
+          src={project.image}
+          alt={`V TEMPO ${project.title}`}
+          fill
+          className="object-cover"
+          style={{ objectPosition: project.objectPosition }}
+          sizes="(max-width: 768px) 100vw, 1280px"
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function Creations() {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     registerGsap();
-    if (!ref.current) return;
+    if (!ref.current || !shouldUseHeavyMotion()) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".creation-card", {
@@ -105,94 +133,56 @@ export default function Creations() {
   }, []);
 
   return (
-    <section ref={ref} id="creations" className="px-6 py-32 lg:px-10 lg:py-48">
+    <section ref={ref} id="creations" className="px-6 py-20 sm:py-32 lg:px-10 lg:py-48">
       <div className="mx-auto max-w-7xl">
-        <p className="section-label mb-8">Chapter 05 — Featured Creations</p>
-        <h2 className="display-title mb-16 max-w-2xl text-4xl sm:text-5xl lg:text-6xl">
+        <p className="section-label mb-6 sm:mb-8">Chapter 05 — Featured Creations</p>
+        <h2 className="display-title mb-12 max-w-2xl text-3xl sm:mb-16 sm:text-5xl lg:text-6xl">
           Commissions that tell their own story.
         </h2>
 
-        <div className="space-y-16 lg:space-y-24">
+        <div className="space-y-12 sm:space-y-16 lg:space-y-24">
           {projects.map((project, i) =>
             project.image ? (
               <article
                 key={project.title}
-                className={`creation-card creation-visual-${i} group relative min-h-[70vh] overflow-hidden border border-line`}
+                className={`creation-card creation-visual-${i} overflow-hidden border border-line`}
               >
-                <div className="creation-bg absolute inset-0 overflow-hidden">
-                  <div
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                    style={{
-                      width: `${(project.imageZoom ?? 1) * 100}%`,
-                      height: `${(project.imageZoom ?? 1) * 100}%`,
-                    }}
-                  >
-                    <Image
-                      src={project.image}
-                      alt={`V TEMPO ${project.title}`}
-                      fill
-                      className="object-cover"
-                      style={{ objectPosition: project.objectPosition }}
-                      sizes="(max-width: 768px) 100vw, 1280px"
-                    />
+                {/* Mobile: image on top, text below */}
+                <div className="relative h-[50vh] min-h-[280px] w-full lg:hidden">
+                  <ProjectImage project={project} />
+                </div>
+
+                {/* Desktop: full-bleed background */}
+                <div className="creation-bg relative hidden min-h-[70vh] lg:block">
+                  <div className="absolute inset-0 overflow-hidden">
+                    <ProjectImage project={project} />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/20" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-bg/90 via-bg/50 to-transparent" />
+
+                  <div className="relative z-10 flex min-h-[70vh] flex-col justify-end p-12 lg:p-16">
+                    <ProjectDetails project={project} index={i} />
                   </div>
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/20" />
-                <div className="absolute inset-0 bg-gradient-to-r from-bg/90 via-bg/50 to-transparent" />
-
-                <div className="relative z-10 flex min-h-[70vh] flex-col justify-end p-8 sm:p-12 lg:p-16">
-                  <div className="max-w-xl">
-                    <span className="section-label text-accent">Project 0{i + 1}</span>
-                    <h3 className="display-title mt-4 text-5xl sm:text-6xl lg:text-7xl">
-                      {project.title}
-                    </h3>
-                  </div>
-
-                  <div className="mt-10 grid gap-8 border-t border-text/10 pt-8 sm:grid-cols-3 lg:max-w-3xl">
-                    <div>
-                      <span className="section-label">Challenge</span>
-                      <p className="mt-2 text-sm leading-relaxed text-muted">
-                        {project.challenge}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="section-label">Materials</span>
-                      <p className="mt-2 text-sm leading-relaxed text-muted">
-                        {project.materials}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="section-label">Result</span>
-                      <p className="mt-2 text-sm leading-relaxed text-text">
-                        {project.result}
-                      </p>
-                    </div>
-                  </div>
+                {/* Mobile: text block */}
+                <div className="bg-bg p-6 sm:p-8 lg:hidden">
+                  <ProjectDetails project={project} index={i} />
                 </div>
               </article>
             ) : (
               <article
                 key={project.title}
-                className="creation-card grid gap-10 border-t border-line pt-16 lg:grid-cols-12"
+                className="creation-card grid gap-8 border-t border-line pt-12 sm:gap-10 sm:pt-16 lg:grid-cols-12"
               >
                 <div className="lg:col-span-5">
                   <span className="section-label text-accent">Project 0{i + 1}</span>
-                  <h3 className="display-title mt-4 text-4xl lg:text-5xl">{project.title}</h3>
+                  <h3 className="display-title mt-3 text-3xl sm:mt-4 sm:text-4xl lg:text-5xl">
+                    {project.title}
+                  </h3>
                 </div>
-                <div className="space-y-6 lg:col-span-7">
-                  <div>
-                    <span className="section-label">Challenge</span>
-                    <p className="mt-2 text-muted">{project.challenge}</p>
-                  </div>
-                  <div>
-                    <span className="section-label">Materials</span>
-                    <p className="mt-2 text-muted">{project.materials}</p>
-                  </div>
-                  <div>
-                    <span className="section-label">Result</span>
-                    <p className="mt-2 text-text">{project.result}</p>
-                  </div>
+                <div className="space-y-5 sm:space-y-6 lg:col-span-7">
+                  <ProjectMeta project={project} />
                 </div>
               </article>
             )
@@ -200,5 +190,46 @@ export default function Creations() {
         </div>
       </div>
     </section>
+  );
+}
+
+function ProjectDetails({
+  project,
+  index,
+}: {
+  project: (typeof projects)[number];
+  index: number;
+}) {
+  return (
+    <>
+      <div className="max-w-xl">
+        <span className="section-label text-accent">Project 0{index + 1}</span>
+        <h3 className="display-title mt-3 text-4xl sm:mt-4 sm:text-5xl lg:text-7xl">
+          {project.title}
+        </h3>
+      </div>
+      <div className="mt-8 grid gap-6 border-t border-text/10 pt-6 sm:mt-10 sm:gap-8 sm:pt-8 lg:grid-cols-3 lg:max-w-3xl">
+        <ProjectMeta project={project} />
+      </div>
+    </>
+  );
+}
+
+function ProjectMeta({ project }: { project: (typeof projects)[number] }) {
+  return (
+    <>
+      <div>
+        <span className="section-label">Challenge</span>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{project.challenge}</p>
+      </div>
+      <div>
+        <span className="section-label">Materials</span>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{project.materials}</p>
+      </div>
+      <div>
+        <span className="section-label">Result</span>
+        <p className="mt-2 text-sm leading-relaxed text-text">{project.result}</p>
+      </div>
+    </>
   );
 }

@@ -3,13 +3,16 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { registerGsap, ScrollTrigger } from "@/lib/gsap";
+import { isMobileViewport, prefersReducedMotion } from "@/lib/motion-prefs";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     registerGsap();
 
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+    if (prefersReducedMotion() || isMobileViewport()) {
+      ScrollTrigger.refresh();
+      return;
+    }
 
     const lenis = new Lenis({
       duration: 1.1,
@@ -24,8 +27,12 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     };
     requestAnimationFrame(raf);
 
+    const onResize = () => ScrollTrigger.refresh();
+    window.addEventListener("resize", onResize);
+
     return () => {
       lenis.destroy();
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 

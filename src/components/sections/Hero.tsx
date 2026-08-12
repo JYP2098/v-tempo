@@ -3,13 +3,14 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { gsap, registerGsap } from "@/lib/gsap";
+import { shouldUseHeavyMotion } from "@/lib/motion-prefs";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     registerGsap();
-    if (!sectionRef.current) return;
+    if (!sectionRef.current || !shouldUseHeavyMotion()) return;
 
     const ctx = gsap.context(() => {
       gsap.to(".hero-video", {
@@ -68,7 +69,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.4 }}
-          className="display-title max-w-4xl text-5xl sm:text-7xl lg:text-8xl"
+          className="display-title max-w-4xl text-4xl sm:text-7xl lg:text-8xl"
         >
           Built Around
           <br />

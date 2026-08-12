@@ -94,6 +94,16 @@ body {
   );
 }
 
+@media (max-width: 767px) {
+  .display-title {
+    line-height: 1.05;
+  }
+
+  .section-label {
+    letter-spacing: 0.2em;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

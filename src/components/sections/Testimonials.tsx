@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, registerGsap } from "@/lib/gsap";
+import { shouldUseHeavyMotion } from "@/lib/motion-prefs";
 
 const quotes = [
   {
@@ -21,7 +22,7 @@ export default function Testimonials() {
 
   useEffect(() => {
     registerGsap();
-    if (!ref.current) return;
+    if (!ref.current || !shouldUseHeavyMotion()) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".testimonial", {
@@ -40,7 +41,7 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section ref={ref} id="testimonials" className="px-6 py-32 lg:px-10 lg:py-48">
+    <section ref={ref} id="testimonials" className="px-6 py-20 sm:py-32 lg:px-10 lg:py-48">
       <div className="mx-auto max-w-7xl">
         <p className="section-label mb-8">Chapter 07 — Client Stories</p>
 

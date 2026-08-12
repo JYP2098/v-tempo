@@ -2,13 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, registerGsap } from "@/lib/gsap";
+import { shouldUseHeavyMotion } from "@/lib/motion-prefs";
 
 export default function Philosophy() {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     registerGsap();
-    if (!ref.current) return;
+    if (!ref.current || !shouldUseHeavyMotion()) return;
 
     const ctx = gsap.context(() => {
       gsap.from(".philosophy-line", {
@@ -28,22 +29,22 @@ export default function Philosophy() {
   }, []);
 
   return (
-    <section ref={ref} id="philosophy" className="px-6 py-32 lg:px-10 lg:py-48">
+    <section ref={ref} id="philosophy" className="px-6 py-20 sm:py-32 lg:px-10 lg:py-48">
       <div className="mx-auto max-w-7xl">
-        <p className="section-label mb-12">Chapter 01 — Philosophy</p>
-        <div className="grid gap-16 lg:grid-cols-2 lg:items-end">
+        <p className="section-label mb-8 sm:mb-12">Chapter 01 — Philosophy</p>
+        <div className="grid gap-10 sm:gap-16 lg:grid-cols-2 lg:items-end">
           <div>
-            <h2 className="philosophy-line display-title text-5xl sm:text-6xl lg:text-7xl">
+            <h2 className="philosophy-line display-title text-4xl sm:text-6xl lg:text-7xl">
               Every watch begins with a story.
             </h2>
           </div>
-          <div className="space-y-6">
-            <p className="philosophy-line text-lg leading-relaxed text-muted">
+          <div className="space-y-5 sm:space-y-6">
+            <p className="philosophy-line text-base leading-relaxed text-muted sm:text-lg">
               V TEMPO is not just a watch brand — it is a story told in time. Each
               timepiece is a chapter in a larger narrative, crafted with intention and
               emotion, designed to resonate with the soul of its wearer.
             </p>
-            <p className="philosophy-line text-lg leading-relaxed text-muted">
+            <p className="philosophy-line text-base leading-relaxed text-muted sm:text-lg">
               While a phone may keep perfect time, it cannot capture the poetry of a
               mechanical movement ticking against your wrist — encased in materials
               chosen with care, crafted to speak to your story.
