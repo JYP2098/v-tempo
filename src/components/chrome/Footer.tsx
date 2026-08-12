@@ -19,6 +19,14 @@ export default function Footer() {
           <Link href="mailto:hello@vtempo.com" className="transition-colors hover:text-text">
             hello@vtempo.com
           </Link>
+          <a
+            href="https://www.instagram.com/vtempo.watches?igsh=Z2MzOWV5dDNkbmp1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-text"
+          >
+            Instagram
+          </a>
           <span className="section-label mt-4">© {new Date().getFullYear()} V TEMPO</span>
         </div>
       </div>

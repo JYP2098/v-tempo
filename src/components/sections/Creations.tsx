@@ -1,26 +1,61 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { gsap, registerGsap } from "@/lib/gsap";
 
 const projects = [
   {
-    title: "The Architect",
-    challenge: "Minimal dial inspired by brutalist geometry",
-    materials: "Titanium case, slate dial, black leather",
-    result: "A quiet statement piece for daily wear",
+    title: "Monaco",
+    challenge: "Racing heritage meets modern restraint",
+    materials: "Square case, chronograph dial, perforated leather",
+    result: "Built for those who live at full throttle",
+    image: "/creations/monaco.png",
+    objectPosition: "center 45%",
+    imageZoom: 1.12,
   },
   {
-    title: "Horizon Line",
-    challenge: "Capture a Pacific sunset in enamel",
-    materials: "Steel case, gradient enamel dial, mesh bracelet",
-    result: "Color that shifts with every angle of light",
+    title: "Explorer",
+    challenge: "Rugged capability without sacrificing elegance",
+    materials: "Brushed steel, high-contrast dial, robust bracelet",
+    result: "A companion for every horizon",
+    image: "/creations/explorer.png",
+    objectPosition: "center 40%",
+    imageZoom: 1.1,
   },
   {
-    title: "Legacy No. 1",
-    challenge: "Commemorate a family milestone",
-    materials: "Rose gold, skeleton movement, custom engraving",
-    result: "An heirloom designed to outlast generations",
+    title: "Mariner",
+    challenge: "Depth, durability, and refined presence",
+    materials: "Rotating bezel, luminous indices, rubber strap",
+    result: "Engineered for land and sea",
+    image: "/creations/mariner.png",
+    objectPosition: "38% 68%",
+  },
+  {
+    title: "GMT",
+    challenge: "Two time zones, one unmistakable identity",
+    materials: "Dual-time complication, bi-color bezel, steel case",
+    result: "For those who move between worlds",
+  },
+  {
+    title: "Classic",
+    challenge: "Timeless proportions, nothing superfluous",
+    materials: "Dress case, clean dial, leather strap",
+    result: "Quiet confidence for every occasion",
+  },
+  {
+    title: "Imperial",
+    challenge: "Opulence with intention, never excess",
+    materials: "Rose gold case, enamel dial, alligator leather",
+    result: "A statement of refined authority",
+  },
+  {
+    title: "Executive",
+    challenge: "Power and precision in equal measure",
+    materials: "Slim profile, sunburst dial, deployant clasp",
+    result: "The boardroom, distilled to its essence",
+    image: "/creations/executive.png",
+    objectPosition: "center center",
   },
 ];
 
@@ -33,14 +68,36 @@ export default function Creations() {
 
     const ctx = gsap.context(() => {
       gsap.from(".creation-card", {
-        y: 80,
+        y: 60,
         opacity: 0,
-        stagger: 0.2,
+        stagger: 0.12,
         duration: 1,
         scrollTrigger: {
           trigger: ref.current,
           start: "top 70%",
         },
+      });
+
+      projects.forEach((project, i) => {
+        if (!project.image) return;
+        const card = ref.current?.querySelector(`.creation-visual-${i}`);
+        const bg = card?.querySelector(".creation-bg");
+        if (!card || !bg) return;
+
+        gsap.fromTo(
+          bg,
+          { y: 20 },
+          {
+            y: -20,
+            ease: "none",
+            scrollTrigger: {
+              trigger: card,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1,
+            },
+          }
+        );
       });
     }, ref);
 
@@ -55,32 +112,91 @@ export default function Creations() {
           Commissions that tell their own story.
         </h2>
 
-        <div className="space-y-24">
-          {projects.map((project, i) => (
-            <article
-              key={project.title}
-              className="creation-card grid gap-10 border-t border-line pt-16 lg:grid-cols-12"
-            >
-              <div className="lg:col-span-5">
-                <span className="section-label text-accent">Project 0{i + 1}</span>
-                <h3 className="display-title mt-4 text-4xl lg:text-5xl">{project.title}</h3>
-              </div>
-              <div className="space-y-6 lg:col-span-7">
-                <div>
-                  <span className="section-label">Challenge</span>
-                  <p className="mt-2 text-muted">{project.challenge}</p>
+        <div className="space-y-16 lg:space-y-24">
+          {projects.map((project, i) =>
+            project.image ? (
+              <article
+                key={project.title}
+                className={`creation-card creation-visual-${i} group relative min-h-[70vh] overflow-hidden border border-line`}
+              >
+                <div className="creation-bg absolute inset-0 overflow-hidden">
+                  <div
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                    style={{
+                      width: `${(project.imageZoom ?? 1) * 100}%`,
+                      height: `${(project.imageZoom ?? 1) * 100}%`,
+                    }}
+                  >
+                    <Image
+                      src={project.image}
+                      alt={`V TEMPO ${project.title}`}
+                      fill
+                      className="object-cover"
+                      style={{ objectPosition: project.objectPosition }}
+                      sizes="(max-width: 768px) 100vw, 1280px"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <span className="section-label">Materials</span>
-                  <p className="mt-2 text-muted">{project.materials}</p>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-bg/20" />
+                <div className="absolute inset-0 bg-gradient-to-r from-bg/90 via-bg/50 to-transparent" />
+
+                <div className="relative z-10 flex min-h-[70vh] flex-col justify-end p-8 sm:p-12 lg:p-16">
+                  <div className="max-w-xl">
+                    <span className="section-label text-accent">Project 0{i + 1}</span>
+                    <h3 className="display-title mt-4 text-5xl sm:text-6xl lg:text-7xl">
+                      {project.title}
+                    </h3>
+                  </div>
+
+                  <div className="mt-10 grid gap-8 border-t border-text/10 pt-8 sm:grid-cols-3 lg:max-w-3xl">
+                    <div>
+                      <span className="section-label">Challenge</span>
+                      <p className="mt-2 text-sm leading-relaxed text-muted">
+                        {project.challenge}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="section-label">Materials</span>
+                      <p className="mt-2 text-sm leading-relaxed text-muted">
+                        {project.materials}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="section-label">Result</span>
+                      <p className="mt-2 text-sm leading-relaxed text-text">
+                        {project.result}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="section-label">Result</span>
-                  <p className="mt-2 text-text">{project.result}</p>
+              </article>
+            ) : (
+              <article
+                key={project.title}
+                className="creation-card grid gap-10 border-t border-line pt-16 lg:grid-cols-12"
+              >
+                <div className="lg:col-span-5">
+                  <span className="section-label text-accent">Project 0{i + 1}</span>
+                  <h3 className="display-title mt-4 text-4xl lg:text-5xl">{project.title}</h3>
                 </div>
-              </div>
-            </article>
-          ))}
+                <div className="space-y-6 lg:col-span-7">
+                  <div>
+                    <span className="section-label">Challenge</span>
+                    <p className="mt-2 text-muted">{project.challenge}</p>
+                  </div>
+                  <div>
+                    <span className="section-label">Materials</span>
+                    <p className="mt-2 text-muted">{project.materials}</p>
+                  </div>
+                  <div>
+                    <span className="section-label">Result</span>
+                    <p className="mt-2 text-text">{project.result}</p>
+                  </div>
+                </div>
+              </article>
+            )
+          )}
         </div>
       </div>
     </section>
